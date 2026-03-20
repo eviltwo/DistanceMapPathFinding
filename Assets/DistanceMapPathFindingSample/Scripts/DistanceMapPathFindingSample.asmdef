@@ -1,0 +1,16 @@
+{
+    "name": "DistanceMapPathFindingSample",
+    "rootNamespace": "DistanceMapPathFindingSample",
+    "references": [
+        "GUID:9976aa405eba6c140a9f428690478052"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

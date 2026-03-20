@@ -1,0 +1,15 @@
+{
+  "name": "com.eviltwo.distance-map-path-finding",
+  "displayName": "Distance Map Path Finding",
+  "version": "0.5.0",
+  "unity": "6000.3",
+  "description": "Distance Map Path Finding",
+  "author": {
+    "name": "DAIKI(eviltwo)",
+    "url": "https://github.com/eviltwo"
+  },
+  "keywords": [
+  ],
+  "dependencies": {
+  }
+}
