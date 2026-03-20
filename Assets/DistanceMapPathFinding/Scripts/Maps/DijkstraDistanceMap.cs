@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace DistanceMapPathfinding.Maps
 {
-    public class DijkstraDistanceMap
+    public class DijkstraDistanceMap : IDistanceMap
     {
         private readonly ICostMap _costMap;
 
@@ -11,8 +11,6 @@ namespace DistanceMapPathfinding.Maps
         private readonly bool[] _visited;
 
         private readonly List<int> _openSet = new();
-
-        public static readonly int[] NeighborBuffer = new int[8];
 
         public bool IsFinished => _openSet.Count == 0;
 
@@ -41,10 +39,11 @@ namespace DistanceMapPathfinding.Maps
             _visited[position] = true;
 
             // Push neighbors to open set
-            var hitCount = _costMap.GetNeighbors(position, NeighborBuffer);
+            System.Span<int> neighborBuffer = stackalloc int[32];
+            var hitCount = _costMap.GetNeighbors(position, neighborBuffer);
             for (var i = 0; i < hitCount; i++)
             {
-                var neighborPosition = NeighborBuffer[i];
+                var neighborPosition = neighborBuffer[i];
                 if (_visited[neighborPosition]) continue;
                 var totalCost = _distances[position] + _costMap.GetCost(position, neighborPosition);
                 if (totalCost >= _distances[neighborPosition]) continue;
@@ -53,11 +52,14 @@ namespace DistanceMapPathfinding.Maps
             }
         }
 
-        public int GetNodeCount() => _distances.Length;
-
         public float GetDistance(int position)
         {
             return _distances[position];
+        }
+
+        public int GetNeighbors(int index, System.Span<int> neighbors)
+        {
+            return _costMap.GetNeighbors(index, neighbors);
         }
 
         private int PopFromOpenSet()

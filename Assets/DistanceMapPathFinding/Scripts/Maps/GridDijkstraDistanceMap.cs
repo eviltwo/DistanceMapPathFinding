@@ -4,11 +4,13 @@ using UnityEngine;
 
 namespace DistanceMapPathfinding.Maps
 {
-    public class GridDijkstraDistanceMap : DijkstraDistanceMap
+    public class GridDijkstraDistanceMap : DijkstraDistanceMap, IGridDistanceMap
     {
         private readonly Vector3Int _size;
 
-        public GridDijkstraDistanceMap(GridCostMap costMap, IReadOnlyList<Vector3Int> startPositions) : base(costMap, PositionToIndex(startPositions, costMap.Size))
+        public Vector3Int Size => _size;
+
+        public GridDijkstraDistanceMap(IGridCostMap costMap, IReadOnlyList<Vector3Int> startPositions) : base(costMap, PositionToIndex(startPositions, costMap.Size))
         {
             _size = costMap.Size;
         }

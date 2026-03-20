@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DistanceMapPathfinding.Maps
 {
-    public class GridCostMap : ICostMap
+    public class GridCostMap : IGridCostMap
     {
         private readonly Vector3Int _size;
 
@@ -48,6 +48,12 @@ namespace DistanceMapPathfinding.Maps
             _costs[index] = cost;
         }
 
+        public float GetCost(Vector3Int position)
+        {
+            var index = GridUtility.PositionToIndex(position, _size);
+            return _costs[index];
+        }
+
         public float GetCost(int from, int to)
         {
             return _costs[to];
@@ -65,14 +71,14 @@ namespace DistanceMapPathfinding.Maps
             return _walkables[index];
         }
 
-        public int GetNeighbors(int index, int[] neighbors)
+        public int GetNeighbors(int index, System.Span<int> neighbors)
         {
             var position = GridUtility.IndexToPosition(index, _size);
             var hitCount = 0;
             foreach (var direction in Directions)
             {
                 var neighborPosition = position + direction;
-                if (!IsInside(neighborPosition, _size)) continue;
+                if (!GridUtility.IsInside(neighborPosition, _size)) continue;
                 var neighborIndex = GridUtility.PositionToIndex(position + direction, _size);
                 if (_walkables[neighborIndex])
                 {
@@ -82,16 +88,6 @@ namespace DistanceMapPathfinding.Maps
             }
 
             return hitCount;
-        }
-
-        private static bool IsInside(Vector3Int position, Vector3Int size)
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                if (position[i] < 0 || position[i] >= size[i]) return false;
-            }
-
-            return true;
         }
 
         private static void FillArray<T>(T[] array, T value)

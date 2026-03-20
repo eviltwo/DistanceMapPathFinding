@@ -6,6 +6,6 @@ namespace DistanceMapPathfinding.Maps
 
         float GetCost(int from, int to);
 
-        int GetNeighbors(int index, int[] neighbors);
+        int GetNeighbors(int index, System.Span<int> neighbors);
     }
 }

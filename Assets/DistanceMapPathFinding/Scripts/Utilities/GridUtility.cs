@@ -13,5 +13,15 @@ namespace DistanceMapPathfinding.Utilities
         {
             return new Vector3Int(index % size.x, index / size.x % size.y, index / (size.x * size.y));
         }
+
+        public static bool IsInside(Vector3Int position, Vector3Int size)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                if (position[i] < 0 || position[i] >= size[i]) return false;
+            }
+
+            return true;
+        }
     }
 }

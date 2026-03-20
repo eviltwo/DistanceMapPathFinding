@@ -1,4 +1,6 @@
+using System;
 using DistanceMapPathfinding.Maps;
+using DistanceMapPathfinding.PathFindings;
 using UnityEngine;
 
 namespace DistanceMapPathfindingSample
@@ -13,6 +15,8 @@ namespace DistanceMapPathfindingSample
 
         public Transform[] Obstacles = System.Array.Empty<Transform>();
 
+        public Transform Agent;
+
         public bool DrawGizmos = true;
 
         public bool NextStep = false;
@@ -22,6 +26,8 @@ namespace DistanceMapPathfindingSample
         private GridCostMap _costMap;
 
         private GridDijkstraDistanceMap _distanceMap;
+
+        private GridPathFinder _pathFinder;
 
         private void Start()
         {
@@ -40,6 +46,9 @@ namespace DistanceMapPathfindingSample
             }
 
             _distanceMap = new GridDijkstraDistanceMap(_costMap, startPositions);
+
+            // Create path finder
+            _pathFinder = new GridPathFinder(_distanceMap);
         }
 
         private void Update()
@@ -69,7 +78,7 @@ namespace DistanceMapPathfindingSample
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (_costMap == null || _distanceMap == null) return;
+            if (_costMap == null || _distanceMap == null || _pathFinder == null) return;
             if (!DrawGizmos) return;
 
             for (var x = 0; x < Size.x; x++)
@@ -102,6 +111,18 @@ namespace DistanceMapPathfindingSample
                         UnityEditor.Handles.Label(position, distance.ToString("F0"), guistyle);
                     }
                 }
+            }
+
+            Gizmos.color = Color.white;
+            Gizmos.matrix = Matrix4x4.identity;
+            var agentPosition = Grid.WorldToCell(Agent.position);
+            Span<Vector3Int> path = stackalloc Vector3Int[128];
+            var nodeCount = _pathFinder.FindPath(agentPosition, path);
+            for (var i = 0; i < nodeCount - 1; i++)
+            {
+                var from = Grid.GetCellCenterWorld(path[i]);
+                var to = Grid.GetCellCenterWorld(path[i + 1]);
+                Gizmos.DrawLine(from, to);
             }
         }
 #endif
