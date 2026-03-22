@@ -55,6 +55,14 @@ namespace DistanceMapPathfinding.Maps
             }
         }
 
+        public void RunAllSteps()
+        {
+            while (!IsFinished)
+            {
+                NextStep();
+            }
+        }
+
         public float GetDistance(int position)
         {
             return _distances[position];

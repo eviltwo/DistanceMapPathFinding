@@ -63,11 +63,7 @@ namespace DistanceMapPathfindingSample
             {
                 var sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
-                while (!_distanceMap.IsFinished)
-                {
-                    _distanceMap.NextStep();
-                }
-
+                _distanceMap.RunAllSteps();
                 sw.Stop();
                 Debug.Log($"Time: {sw.ElapsedMilliseconds}ms");
 
