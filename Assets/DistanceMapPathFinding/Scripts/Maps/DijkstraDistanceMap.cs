@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DistanceMapPathfinding.Collections;
 
 namespace DistanceMapPathfinding.Maps
 {
@@ -10,9 +11,9 @@ namespace DistanceMapPathfinding.Maps
 
         private readonly bool[] _visited;
 
-        private readonly List<int> _openSet = new();
+        private readonly BinaryHeap<int> _heap;
 
-        public bool IsFinished => _openSet.Count == 0;
+        public bool IsFinished => _heap.Count == 0;
 
         public DijkstraDistanceMap(ICostMap costMap, IReadOnlyList<int> startPositions)
         {
@@ -23,10 +24,11 @@ namespace DistanceMapPathfinding.Maps
                 _distances[i] = float.PositiveInfinity;
             }
 
+            _heap = new BinaryHeap<int>(new DistanceComparer(_distances));
             foreach (var startPosition in startPositions)
             {
                 _distances[startPosition] = 0;
-                _openSet.Add(startPosition);
+                _heap.Push(startPosition);
             }
 
             _visited = new bool[costMap.GetNodeCount()];
@@ -34,8 +36,9 @@ namespace DistanceMapPathfinding.Maps
 
         public void NextStep()
         {
-            if (IsFinished) return;
-            var position = PopFromOpenSet();
+            if (_heap.Count == 0) return;
+            var position = _heap.Pop();
+            if (_visited[position]) return;
             _visited[position] = true;
 
             // Push neighbors to open set
@@ -48,7 +51,7 @@ namespace DistanceMapPathfinding.Maps
                 var totalCost = _distances[position] + _costMap.GetCost(position, neighborPosition);
                 if (totalCost >= _distances[neighborPosition]) continue;
                 _distances[neighborPosition] = totalCost;
-                _openSet.Add(neighborPosition);
+                _heap.Push(neighborPosition);
             }
         }
 
@@ -62,23 +65,19 @@ namespace DistanceMapPathfinding.Maps
             return _costMap.GetNeighbors(index, neighbors);
         }
 
-        private int PopFromOpenSet()
+        private class DistanceComparer : IComparer<int>
         {
-            var minValue = float.MaxValue;
-            var minIndex = 0;
-            for (var i = 0; i < _openSet.Count; i++)
+            private readonly float[] _distances;
+
+            public DistanceComparer(float[] distances)
             {
-                var value = _distances[_openSet[i]];
-                if (value < minValue)
-                {
-                    minValue = value;
-                    minIndex = i;
-                }
+                _distances = distances;
             }
 
-            var minPosition = _openSet[minIndex];
-            _openSet.RemoveAt(minIndex);
-            return minPosition;
+            public int Compare(int x, int y)
+            {
+                return _distances[x].CompareTo(_distances[y]);
+            }
         }
     }
 }

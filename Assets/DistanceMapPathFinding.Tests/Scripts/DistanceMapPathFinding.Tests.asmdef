@@ -1,0 +1,18 @@
+{
+    "name": "DistanceMapPathFinding.Tests",
+    "rootNamespace": "DistanceMapPathFinding.Tests",
+    "references": [
+        "GUID:9976aa405eba6c140a9f428690478052"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
